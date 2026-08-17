@@ -13,6 +13,7 @@ const handleOnSubmit = (e) => {
     task,
     hr,
     id: randomIDGenerator(),
+    type: "entry",
   };
 
   taskList.push(obj);
@@ -23,17 +24,19 @@ const displayEntryList = () => {
   let str = "";
   const entryElm = document.getElementById("entryList");
 
-  taskList.map((item, i) => {
+  const entryLst = taskList.filter((item) => item.type === "entry");
+
+  entryLst.map((item, i) => {
     str += `<tr>
                   <th scope="row">${i + 1}</th>
                   <td>${item.task}</td>
                   <td>${item.hr} hr</td>
                   <td class="text-end">
-                    <button class="btn btn-warning">
-                      <i class="fa-solid fa-arrow-left"></i>
-                    </button>
-                    <button class="btn btn-danger">
-                      <i class="fa-solid fa-trash"></i>
+                  <button onclick = "handleOnDelete('${item.id}')" class="btn btn-danger">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                    <button onclick ="switchTask('${item.id}', 'bad')" class="btn btn-warning">
+                      <i class="fa-solid fa-arrow-right"></i>
                     </button>
                   </td>
                 </tr>`;
@@ -41,10 +44,37 @@ const displayEntryList = () => {
 
   console.log(taskList);
 
-  entryElm.innerHTML = str;
+  entryList.innerHTML = str;
 };
 
-// ======== Creating a randomID for the data ========
+const displayBadList = () => {
+  let str = "";
+  const badElm = document.getElementById("badList");
+
+  const badLst = taskList.filter((item) => item.type === "bad");
+
+  badLst.map((item, i) => {
+    str += `<tr>
+                  <th scope="row">${i + 1}</th>
+                  <td>${item.task}</td>
+                  <td>${item.hr} hr</td>
+                  <td class="text-end">
+                  <button onclick ="switchTask('${item.id}', 'entry')" class="btn btn-warning">
+                  <i class="fa-solid fa-arrow-left"></i>
+                  </button>
+                  <button onclick = "handleOnDelete('${item.id}')" class="btn btn-danger">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                  </td>
+                </tr>`;
+  });
+
+  console.log(taskList);
+
+  badElm.innerHTML = str;
+};
+
+// ======== Generating a randomID for the data ========
 
 const randomIDGenerator = (length = 6) => {
   const str = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
@@ -57,4 +87,28 @@ const randomIDGenerator = (length = 6) => {
     id += str[randomIndex];
   }
   return id;
+};
+
+// ======== Using the randomId for removing items from the lists ========
+
+const handleOnDelete = (id) => {
+  if (window.confirm("Are you sure, you want to delete this?")) {
+    taskList = taskList.filter((item) => item.id !== id);
+    displayEntryList();
+    displayBadList();
+  }
+};
+
+// ======== Switching the items between the lists ========
+
+const switchTask = (id, type) => {
+  taskList = taskList.map((item) => {
+    if (item.id === id) {
+      item.type = type;
+    }
+    return item;
+  });
+
+  displayEntryList();
+  displayBadList();
 };
