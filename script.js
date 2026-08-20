@@ -1,5 +1,9 @@
 let taskList = [];
 
+const savedHrsElm = document.getElementById("savedHrs");
+
+const hoursPerWeek = 24 * 7;
+
 const handleOnSubmit = (e) => {
   // FormData() API is used to handle all data from the form. Check MozillaWebAPI
 
@@ -7,7 +11,9 @@ const handleOnSubmit = (e) => {
 
   const task = newForm.get("task");
 
-  const hr = newForm.get("hr");
+  // Downcasting string to number
+
+  const hr = +newForm.get("hr");
 
   const obj = {
     task,
@@ -15,6 +21,14 @@ const handleOnSubmit = (e) => {
     id: randomIDGenerator(),
     type: "entry",
   };
+
+  // Checking if the hours submitted exceeds hours per week
+
+  const existingTotalHrs = taskTotal();
+
+  if (existingTotalHrs + hr > hoursPerWeek) {
+    return alert("Your hours per week has exceeded!");
+  }
 
   taskList.push(obj);
   displayEntryList();
@@ -45,6 +59,7 @@ const displayEntryList = () => {
   console.log(taskList);
 
   entryList.innerHTML = str;
+  taskTotal();
 };
 
 const displayBadList = () => {
@@ -111,4 +126,16 @@ const switchTask = (id, type) => {
 
   displayEntryList();
   displayBadList();
+};
+
+// ======== Calculating Total Hrs ========
+
+const taskTotal = () => {
+  const totalHrs = taskList.reduce((acc, item) => {
+    return acc + item.hr;
+  }, 0);
+
+  document.getElementById("ttlHrs").innerText = totalHrs;
+
+  return totalHrs;
 };
