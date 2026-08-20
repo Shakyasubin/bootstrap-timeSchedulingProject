@@ -1,7 +1,5 @@
 let taskList = [];
 
-const savedHrsElm = document.getElementById("savedHrs");
-
 const hoursPerWeek = 24 * 7;
 
 const handleOnSubmit = (e) => {
@@ -87,6 +85,11 @@ const displayBadList = () => {
   console.log(taskList);
 
   badElm.innerHTML = str;
+
+  document.getElementById("savedHrs").innerText = badLst.reduce(
+    (acc, item) => acc + item.hr,
+    0,
+  );
 };
 
 // ======== Generating a randomID for the data ========
@@ -139,3 +142,5 @@ const taskTotal = () => {
 
   return totalHrs;
 };
+
+// Calculating Saved Hrs
